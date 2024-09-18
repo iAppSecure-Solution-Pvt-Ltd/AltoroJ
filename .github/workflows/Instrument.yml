@@ -11,3 +11,4 @@ jobs:
       FusionLiteProject: ${{ github.event.repository.name }}  # Pass the repository name as FusionLiteProject
       ApplicationFile: 'AltoroJ.war'  # Application file passed by the user
       InstrumentedFile: 'AltoroJ.war'  # Use the same file for InstrumentedFile
+    secrets: inherit
