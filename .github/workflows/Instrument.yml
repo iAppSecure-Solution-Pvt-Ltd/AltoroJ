@@ -2,17 +2,12 @@ name: Instrument
 
 on:
   workflow_dispatch:
-    inputs:
-      application_file:
-        description: 'The application file to use for the Instrument'
-        required: true
-        default: 'AltoroJ.war'
 
 jobs:
-  trigger-build:
+  instrument:
     uses: iAppSecure-Solution-Pvt-Ltd/JAVA-IAST/.github/workflows/Instrument.yml@main  # Reference the reusable workflow
     with:
       working_directory: Remote  # Set the working directory
       FusionLiteProject: ${{ github.event.repository.name }}  # Pass the repository name as FusionLiteProject
-      ApplicationFile: ${{ github.event.inputs.application_file }}  # Application file passed by the user
-      InstrumentedFile: ${{ github.event.inputs.application_file }}  # Use the same file for InstrumentedFile
+      ApplicationFile: 'AltoroJ.war'  # Application file passed by the user
+      InstrumentedFile: 'AltoroJ.war'  # Use the same file for InstrumentedFile
