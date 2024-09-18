@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FusionLiteProject" basedir=".">
+
+    <target name="project-preprocess">
+
+        <unzip src="${Application}/Input/${APPLICATION}" dest="${Project}/Original-Application"/>
+
+        <if>
+            <not>
+                <equals arg1="${SERVER}" arg2=""/>
+            </not>
+            <then>
+                <unzip src="${Application}/Input/${SERVER}" dest="${Project}/Server"/>
+            </then>
+        </if>
+
+        <antcall target="project-preprocess-classes-folder">
+            <param name="classes-folder" value="${ClassesFolder}"/>
+        </antcall>
+
+        <foreach list="${LibraryFolders}" target="project-preprocess-library-folder" param="library-folder" inheritall="true"/>
+
+        <foreach list="${ServerFolders}" target="project-preprocess-server-folder" param="server-folder" inheritall="true"/>
+
+    </target>
+
+    <target name="project-analyze">
+
+        <foreach list="${LibraryFolders}" target="project-analyze-library-folder" param="library-folder" inheritall="true"/>
+
+    </target>
+
+    <target name="project-libraries">
+
+        <antcall target="project-application-classes-folder">
+            <param name="classes-folder" value="${ClassesFolder}"/>
+        </antcall>
+
+        <foreach list="${LibraryFolders}" target="project-application-library-folder" param="library-folder" inheritall="true"/>
+
+        <foreach list="${LibraryFolders}" target="project-reference-library-folder" param="library-folder" inheritall="true"/>
+
+        <foreach list="${ServerFolders}" target="project-server-folder" param="server-folder" inheritall="true"/>
+
+        <foreach list="${SystemFolders}" target="project-system-folder" param="system-folder" inheritall="true"/>
+
+    </target>
+
+    <target name="project-postprocess">
+
+        <antcall target="project-postprocess-classes-folder">
+            <param name="classes-folder" value="${ClassesFolder}"/>
+        </antcall>
+
+        <foreach list="${LibraryFolders}" target="project-postprocess-library-folder" param="library-folder" inheritall="true"/>
+
+        <if>
+            <equals arg1="${InstrumentFolder}" arg2="${ClassesFolder}"/>
+            <then>
+                <antcall target="project-postprocess-instrument-classes">
+                    <param name="instrument-classes" value="${Project}/Instrumented-Application/${InstrumentFolder}"/>
+                </antcall>
+            </then>
+            <else>
+                <antcall target="project-postprocess-instrument-library">
+                    <param name="instrument-library" value="${Project}/Instrumented-Application/${InstrumentFolder}/instrument.jar"/>
+                </antcall>
+            </else>
+        </if>
+
+        <if>
+            <not>
+                <equals arg1="${DIFF}" arg2=""/>
+            </not>
+            <then>
+                <zip basedir="${Project}/Instrumented-Application" destfile="${Application}/Output/${DIFF}" compress="false"/>
+            </then>
+            <else>
+                <zip basedir="${Project}/Instrumented-Application" destfile="${Application}/Output/${APPLICATION}" compress="false"/>
+            </else>
+        </if>
+
+    </target>
+
+    <target name="application-analyze">
+
+        <foreach list="${AnalysisSinkCategories}" target="application-analyze-sink-category" param="analysis-category" inheritall="true"/>
+
+        <foreach list="${AnalysisSourceCategories}" target="application-analyze-source-category" param="analysis-category" inheritall="true"/>
+
+    </target>
+
+</project>
